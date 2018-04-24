@@ -2,28 +2,26 @@
 (function () {
 
     /* --------------------------------- Template Variables -------------------------------- */
-    var homeTpl = Handlebars.compile($("#home-tpl").html());
-    var employeeListTpl = Handlebars.compile($("#employee-list-tpl").html());
+    HomeView.prototype.template = Handlebars.compile($("#home-tpl").html());
+    EmployeeListView.prototype.template = Handlebars.compile($("#employee-list-tpl").html());
+    EmployeeView.prototype.template = Handlebars.compile($("#employee-tpl").html());
 
     /* ---------------------------------- Local Variables ---------------------------------- */
     var service = new EmployeeService();
     service.initialize().done(function () {
-        renderHomeView();
-        console.log("Service initialized by renderHomeView");
-    });
-
-    /* ---------------------------------- Local Functions ---------------------------------- */
-    function findByName() {
-        service.findByName($('.search-key').val()).done(function (employees) {
-            $('.content').html(employeeListTpl(employees));
+        router.addRoute('', function() {
+            $('body').html(new HomeView(service).render().$el);
         });
-    }
 
-    /*  ---------------------------------- Home View markup programmatical generation ---------------------------------- */
-    function renderHomeView() {
-        $('body').html(homeTpl());
-        $('.search-key').on('keyup', findByName);
-    }
+        router.addRoute('employees/:id', function(id) {
+            service.findById(parseInt(id)).done(function(employee) {
+                $('body').html(new EmployeeView(employee).render().$el);
+            });
+        });
 
-
+        router.start();
+    });
+    // service.initialize().done(function () {
+    //     $('body').html(new HomeView(service).render().$el);
+    // });
 }());
