@@ -19,13 +19,10 @@
             service.findById(parseInt(id)).done(function(employee) {
                 slider.slidePage(new EmployeeView(employee).render().$el);
             });
-
         });
 
 
         router.start();
     });
-    // service.initialize().done(function () {
-    //     $('body').html(new HomeView(service).render().$el);
-    // });
+
 }());
